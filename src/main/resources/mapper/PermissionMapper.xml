@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rbac.springsecurity.mapper.PermissionMapper">
+    <resultMap id="BaseResultMap" type="com.rbac.springsecurity.pojo.entity.Permission">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="name" property="name" jdbcType="VARCHAR"/>
+        <result column="desc" property="desc" jdbcType="VARCHAR"/>
+        <result column="url" property="url" jdbcType="VARCHAR"/>
+        <result column="method" property="method" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <select id="getPermissionsByRoleIds" resultMap="BaseResultMap">
+        SELECT *
+        FROM permission
+        WHERE id IN
+        (SELECT pid
+        FROM permission_role
+        WHERE rid IN (SELECT id
+        FROM `role`
+        WHERE id IN
+        <foreach item="item" index="index" collection="roleIds" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        ))
+    </select>
+</mapper>
