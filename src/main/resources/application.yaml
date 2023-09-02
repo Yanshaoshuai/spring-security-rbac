@@ -8,6 +8,12 @@ spring:
     url: jdbc:mysql://172.16.0.14:3306/spring-security
     username: root
     password: 12345678
+  data:
+    redis:
+      database: 0
+      host: 127.0.0.1
+      port: 6379
+      password: 123456
 #server:
 #  servlet:
 #    contextPath: /api

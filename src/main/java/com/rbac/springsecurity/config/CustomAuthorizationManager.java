@@ -24,8 +24,6 @@ public class CustomAuthorizationManager implements AuthorizationManager<RequestA
 
     @Override
     public AuthorizationDecision check(Supplier<Authentication> authentication, RequestAuthorizationContext requestAuthorizationContext) {
-        SecurityContextHolderStrategy contextHolderStrategy = SecurityContextHolder.getContextHolderStrategy();
-        SecurityContext context = SecurityContextHolder.getContext();
         HttpServletRequest request = requestAuthorizationContext.getRequest();
         Object principal = authentication.get().getPrincipal();
         User user = null;
