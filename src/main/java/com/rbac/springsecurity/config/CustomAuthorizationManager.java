@@ -34,7 +34,9 @@ public class CustomAuthorizationManager implements AuthorizationManager<RequestA
         if(user!=null){
             for (Permission permission : user.getPermissions()) {
                 AntPathMatcher matcher = new AntPathMatcher();
-                if (permission != null && matcher.match(permission.getUrl(), request.getRequestURI()) && request.getMethod().equalsIgnoreCase(permission.getMethod())) {
+                if (permission != null
+                        && matcher.match(permission.getUrl(), request.getRequestURI())
+                        && request.getMethod().equalsIgnoreCase(permission.getMethod())) {
                     hasPermission = true;
                     break;
                 }
