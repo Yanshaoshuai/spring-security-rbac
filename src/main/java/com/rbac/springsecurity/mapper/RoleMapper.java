@@ -10,6 +10,6 @@ import java.util.List;
 
 @Mapper
 public interface RoleMapper extends BaseMapper<Role> {
-    @Select("select * from role where id in (select rid from role_user where uid =#{userId})")
+    @Select("select * from role where id in (select rid from user_role where uid =#{userId})")
     List<Role> getRolesByUserId(@Param("userId") Long userId);
 }

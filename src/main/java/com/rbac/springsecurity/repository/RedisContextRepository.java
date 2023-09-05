@@ -13,19 +13,20 @@ import org.springframework.security.web.context.HttpRequestResponseHolder;
 import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.stereotype.Component;
 
-import java.util.concurrent.TimeUnit;
-import java.util.function.Supplier;
+import java.time.Duration;
 
 @Component
 public class RedisContextRepository implements SecurityContextRepository {
-    private static final String keyPrefix="SPRING_SECURITY_SESSION_";
-    private static final Long expire=600l;
+    private static final String keyPrefix = "SPRING_SECURITY_SESSION_";
+    private static final Long expire = 600L;
     private final RedissonClient redissonClient;
-    private SecurityContextHolderStrategy securityContextHolderStrategy = SecurityContextHolder
+    private final SecurityContextHolderStrategy securityContextHolderStrategy = SecurityContextHolder
             .getContextHolderStrategy();
+
     public RedisContextRepository(RedissonClient redissonClient) {
         this.redissonClient = redissonClient;
     }
+
     @Override
     public SecurityContext loadContext(HttpRequestResponseHolder requestResponseHolder) {
         return loadDeferredContext(requestResponseHolder.getRequest()).get();
@@ -33,8 +34,18 @@ public class RedisContextRepository implements SecurityContextRepository {
 
     @Override
     public DeferredSecurityContext loadDeferredContext(HttpServletRequest request) {
-        Supplier<SecurityContext> supplier = () -> getRedisContext(request);
-        return new SupplierDeferredSecurityContext(supplier, this.securityContextHolderStrategy);
+        SecurityContext redisContext = getRedisContext(request);
+        return new DeferredSecurityContext() {
+            @Override
+            public boolean isGenerated() {
+                return redisContext != null;
+            }
+
+            @Override
+            public SecurityContext get() {
+                return redisContext;
+            }
+        };
     }
 
     private SecurityContext getRedisContext(HttpServletRequest request) {
@@ -45,7 +56,7 @@ public class RedisContextRepository implements SecurityContextRepository {
     @Override
     public void saveContext(SecurityContext context, HttpServletRequest request, HttpServletResponse response) {
         RBucket<String> bucket = redissonClient.getBucket(keyPrefix + request.getSession().getId());
-        bucket.set(ObjectSerializer.serialize(context), expire, TimeUnit.SECONDS);
+        bucket.set(ObjectSerializer.serialize(context), Duration.ofSeconds(expire));
         securityContextHolderStrategy.setContext(context);
     }
 

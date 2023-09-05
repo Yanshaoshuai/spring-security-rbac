@@ -8,6 +8,8 @@ import com.rbac.springsecurity.pattern.event.spring.CustomSpringEventPublisher;
 import com.rbac.springsecurity.repository.RedisContextRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
@@ -78,5 +80,13 @@ public class SecurityConfig {
     @Bean
     public PasswordEncoder getPwdEncoder() {
         return NoOpPasswordEncoder.getInstance();
+    }
+
+    @Bean
+    public RoleHierarchy roleHierarchy(){
+        RoleHierarchyImpl roleHierarchy = new RoleHierarchyImpl();
+        String hierarchy = "ROLE_admin > ROLE_user";
+        roleHierarchy.setHierarchy(hierarchy);
+        return roleHierarchy;
     }
 }

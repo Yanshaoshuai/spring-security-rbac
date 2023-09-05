@@ -20,7 +20,7 @@ spring:
 mybatis-plus:
   mapper-locations: classpath:mapper/*.xml
   configuration:
-    log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 springdoc:
   swagger-ui:
     disable-swagger-default-url: true

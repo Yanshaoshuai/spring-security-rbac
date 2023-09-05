@@ -3,6 +3,7 @@ package com.rbac.springsecurity.config;
 
 import com.rbac.springsecurity.pojo.entity.Permission;
 import com.rbac.springsecurity.pojo.entity.User;
+import com.rbac.springsecurity.pojo.entity.UserPrincipal;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,14 +26,17 @@ public class CustomAuthorizationManager implements AuthorizationManager<RequestA
     @Override
     public AuthorizationDecision check(Supplier<Authentication> authentication, RequestAuthorizationContext requestAuthorizationContext) {
         HttpServletRequest request = requestAuthorizationContext.getRequest();
+        if(authentication.get()==null){
+            return new AuthorizationDecision(false);
+        }
         Object principal = authentication.get().getPrincipal();
-        User user = null;
+        UserPrincipal userPrincipal = null;
         if(principal instanceof User){
-            user=(User) principal;
+            userPrincipal=(UserPrincipal) principal;
         }
         boolean hasPermission = false;
-        if(user!=null){
-            for (Permission permission : user.getPermissions()) {
+        if(userPrincipal!=null){
+            for (Permission permission : userPrincipal.getPermissions()) {
                 AntPathMatcher matcher = new AntPathMatcher();
                 if (permission != null
                         && matcher.match(permission.getUrl(), request.getRequestURI())
@@ -42,7 +46,7 @@ public class CustomAuthorizationManager implements AuthorizationManager<RequestA
                 }
             }
         }
-        LOG.info("user {} path {} method {} match result {}", principal, request.getRequestURI(), request.getMethod(), hasPermission);
+        LOG.info("user {} path {} method {} match result {}", userPrincipal, request.getRequestURI(), request.getMethod(), hasPermission);
         return new AuthorizationDecision(hasPermission);
     }
 }
