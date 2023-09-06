@@ -61,4 +61,13 @@ public class UserPrincipal extends User implements UserDetails {
     public void setPermissions(List<Permission> permissions) {
         this.permissions = permissions;
     }
+
+    @Override
+    public String toString() {
+        return "UserPrincipal{" +
+                "authorities=" + authorities +
+                ", roles=" + roles +
+                ", permissions=" + permissions +
+                '}';
+    }
 }

@@ -27,7 +27,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
-public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService , UserDetailsService {
+public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService, UserDetailsService {
     private final UserMapper userMapper;
 
     private final RoleService roleService;
@@ -42,11 +42,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Override
     public UserPrincipal loadUserByUsername(String username) throws UsernameNotFoundException {
-        UserPrincipal principal=new UserPrincipal();
-        QueryWrapper<User> userQueryWrapper=new QueryWrapper<>();
-        userQueryWrapper.eq("username",username);
+        UserPrincipal principal = new UserPrincipal();
+        QueryWrapper<User> userQueryWrapper = new QueryWrapper<>();
+        userQueryWrapper.eq("username", username);
         User user = userMapper.selectOne(userQueryWrapper);
-        if(ObjectUtils.isEmpty(user)){
+        if (ObjectUtils.isEmpty(user)) {
             throw new UsernameNotFoundException("user not found");
         }
         buildUserResult(principal, user);
@@ -55,7 +55,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         List<Permission> permissions = permissionService.getPermissionsByRoleIds(roleIds);
         principal.setRoles(roles);
         principal.setPermissions(permissions);
-        Set<GrantedAuthority> authorities=new HashSet<>();
+        Set<GrantedAuthority> authorities = new HashSet<>();
         authorities.addAll(AuthorityUtils.createAuthorityList(permissions.stream().map(Permission::getName).distinct().collect(Collectors.toList())));
         authorities.addAll(AuthorityUtils.createAuthorityList(roles.stream().map(role -> "ROLE_" + role.getName()).distinct().collect(Collectors.toList())));
         principal.setAuthorities(authorities);
@@ -74,7 +74,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         User byId = getById(id);
         List<Role> userRoles = roleService.getUserRoles(id);
         UserDetailVO userDetailVo = new UserDetailVO();
-        buildUserResult(userDetailVo,byId);
+        buildUserResult(userDetailVo, byId);
         userDetailVo.setRoles(userRoles);
         return userDetailVo;
     }
@@ -83,13 +83,25 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Override
     public Boolean updateUserAndRoleById(UpdateUserDTO user) {
         boolean result = updateById(user);
-        if(!CollectionUtils.isEmpty(user.getRoles())){
-            userMapper.deleteUserRoleByUserId(user.getId());
+        updateUserRole(user);
+        return result;
+    }
+
+    private void updateUserRole(UpdateUserDTO user) {
+        userMapper.deleteUserRoleByUserId(user.getId());
+        if (!CollectionUtils.isEmpty(user.getRoles())) {
             Set<Long> roleIds = user.getRoles().stream().map(Role::getId).collect(Collectors.toSet());
-            for (Long rid:roleIds){
-                userMapper.insertUserRole(user.getId(),rid);
+            for (Long rid : roleIds) {
+                userMapper.insertUserRole(user.getId(), rid);
             }
         }
-        return result;
+    }
+
+    @Transactional
+    @Override
+    public Long saveUserAndRole(UpdateUserDTO user) {
+        userMapper.insert(user);
+        updateUserRole(user);
+        return user.getId();
     }
 }

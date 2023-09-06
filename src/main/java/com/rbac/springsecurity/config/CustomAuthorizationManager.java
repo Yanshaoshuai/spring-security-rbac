@@ -40,7 +40,7 @@ public class CustomAuthorizationManager implements AuthorizationManager<RequestA
                 AntPathMatcher matcher = new AntPathMatcher();
                 if (permission != null
                         && matcher.match(permission.getUrl(), request.getRequestURI())
-                        && request.getMethod().equalsIgnoreCase(permission.getMethod())) {
+                        && methodMatch(permission, request.getMethod())) {
                     hasPermission = true;
                     break;
                 }
@@ -48,6 +48,10 @@ public class CustomAuthorizationManager implements AuthorizationManager<RequestA
         }
         LOG.info("user {} path {} method {} match result {}", userPrincipal, request.getRequestURI(), request.getMethod(), hasPermission);
         return new AuthorizationDecision(hasPermission);
+    }
+
+    private static boolean methodMatch(Permission permission,String method) {
+        return method.equalsIgnoreCase(permission.getMethod())||"ALL".equalsIgnoreCase(permission.getMethod());
     }
 }
 

@@ -7,6 +7,7 @@ import com.rbac.springsecurity.pojo.dto.UpdateUserDTO;
 import com.rbac.springsecurity.pojo.entity.User;
 import com.rbac.springsecurity.pojo.vo.UserDetailVO;
 import com.rbac.springsecurity.service.UserService;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -31,9 +32,14 @@ public class UserController {
         return Result.ok(userService.page(page));
     }
 
+    @DeleteMapping("{id}")
+    public Result<Boolean> deleteUser(@PathVariable Long id) {
+        return Result.ok(userService.removeById(id));
+    }
+
     @PostMapping
-    public Result<Boolean> addUser(User user) {
-        return Result.ok(userService.save(user));
+    public Result<Long> addUser(@RequestBody UpdateUserDTO user) {
+        return Result.ok(userService.saveUserAndRole(user));
     }
 
     @PutMapping

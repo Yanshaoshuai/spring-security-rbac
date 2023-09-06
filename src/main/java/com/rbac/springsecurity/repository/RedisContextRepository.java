@@ -18,7 +18,7 @@ import java.time.Duration;
 @Component
 public class RedisContextRepository implements SecurityContextRepository {
     private static final String keyPrefix = "SPRING_SECURITY_SESSION_";
-    private static final Long expire = 600L;
+    private static final Long expire = 60000L;
     private final RedissonClient redissonClient;
     private final SecurityContextHolderStrategy securityContextHolderStrategy = SecurityContextHolder
             .getContextHolderStrategy();

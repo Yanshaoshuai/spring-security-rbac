@@ -9,4 +9,6 @@ public interface UserService extends IService<User> {
     UserDetailVO getUserDetailById(Long id);
 
     Boolean updateUserAndRoleById(UpdateUserDTO user);
+
+    Long saveUserAndRole(UpdateUserDTO user);
 }
