@@ -17,7 +17,7 @@ public class PermissionServiceImpl extends ServiceImpl<PermissionMapper, Permiss
     }
 
     @Override
-    public List<Permission> getRolePermissions(String roleId) {
+    public List<Permission> getRolePermissions(Long roleId) {
         return permissionMapper.getPermissionsByRoleId(roleId);
     }
 

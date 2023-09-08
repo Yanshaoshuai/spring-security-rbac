@@ -16,7 +16,7 @@
         FROM permission
         WHERE id IN
         (SELECT pid
-        FROM permission_role
+        FROM role_permission
         WHERE rid IN (SELECT id
         FROM `role`
         WHERE id IN

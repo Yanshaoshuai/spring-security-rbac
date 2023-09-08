@@ -13,12 +13,12 @@ import java.util.List;
 @TableName("role")
 public class Role implements Serializable {
 
-    @TableId(value = "id", type = IdType.AUTO)
+    @TableId(value = "`id`", type = IdType.AUTO)
     private Long id;
 
-    @TableField(value = "name")
+    @TableField(value = "`name`")
     private String name;
 
-    @TableField(value = "description")
+    @TableField(value = "`description`")
     private String description;
 }

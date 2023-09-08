@@ -9,8 +9,8 @@ import java.util.List;
 
 @Mapper
 public interface PermissionMapper extends BaseMapper<Permission> {
-    @Select("select * from permission where id in (select pid from user_role where rid =#{roleId})")
-    List<Permission> getPermissionsByRoleId(String roleId);
+    @Select("select * from permission where id in (select pid from role_permission where rid =#{roleId})")
+    List<Permission> getPermissionsByRoleId(Long roleId);
     List<Permission> getPermissionsByRoleIds(List<Long> roleIds);
 
     @Select("select * from permission where name =#{name}")

@@ -11,18 +11,18 @@ import java.io.Serializable;
 @TableName("permission")
 @Data
 public class Permission implements Serializable {
-    @TableId(value = "id", type = IdType.AUTO)
+    @TableId(value = "`id`", type = IdType.AUTO)
     private Long id;
 
-    @TableField(value = "name")
+    @TableField(value = "`name`")
     private String name;
 
-    @TableField(value = "desc")
+    @TableField(value = "`desc`")
     private String desc;
 
-    @TableField(value = "url")
+    @TableField(value = "`url`")
     private String url;
 
-    @TableField(value = "method")
+    @TableField(value = "`method`")
     private String method;
 }

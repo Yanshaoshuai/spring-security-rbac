@@ -6,7 +6,7 @@ import com.rbac.springsecurity.pojo.entity.Permission;
 import java.util.List;
 
 public interface PermissionService extends IService<Permission> {
-    List<Permission> getRolePermissions(String roleId);
+    List<Permission> getRolePermissions(Long roleId);
 
     List<Permission> getPermissionsByRoleIds(List<Long> roleIds);
 

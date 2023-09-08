@@ -14,16 +14,16 @@ import java.util.List;
 @TableName("user")
 public class User{
 
-    @TableId(value = "id",type = IdType.AUTO)
+    @TableId(value = "`id`",type = IdType.AUTO)
     private Long id;
 
-    @TableField(value = "username")
+    @TableField(value = "`username`")
     private String username;
 
-    @TableField(value = "password")
+    @TableField(value = "`password`")
     private String password;
 
-    @TableField(value = "enabled")
+    @TableField(value = "`enabled`")
     private boolean enabled;
 
     public Long getId() {
